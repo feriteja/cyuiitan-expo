@@ -1,7 +1,6 @@
-import { Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 const MainTabLayout = () => {
   const TabIcon = ({ color, name, focused, icon, size }: any) => {

@@ -4,6 +4,7 @@ import { View, Text, FlatList, Pressable, Image } from "react-native";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 const chats = [
   {
@@ -24,6 +25,9 @@ const chats = [
 ];
 
 const home = () => {
+  const { isLogged, isUserReady, loading, user } = useGlobalContext();
+
+  console.log({ isLogged, isUserReady, loading, user: !!user });
   return (
     <SafeAreaView className="flex-1 bg-white">
       {/* Header */}
@@ -32,9 +36,6 @@ const home = () => {
         <View className="flex-row space-x-4">
           <Pressable>
             <Feather name="search" size={24} color="white" />
-          </Pressable>
-          <Pressable>
-            <MaterialIcons name="more-vert" size={24} color="white" />
           </Pressable>
         </View>
       </View>

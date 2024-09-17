@@ -94,7 +94,10 @@ const updateUsername = async (uid: string, newUsername: string) => {
 
   try {
     // Check if the username already exists
-    const usernameQuery = query(usersRef, where("username", "==", newUsername));
+    const usernameQuery = query(
+      usersRef,
+      where("username", "==", newUsername.toLowerCase())
+    );
     const querySnapshot = await getDocs(usernameQuery);
 
     if (!querySnapshot.empty) {
@@ -108,7 +111,7 @@ const updateUsername = async (uid: string, newUsername: string) => {
     // If username doesn't exist, update the current user's document
     const userDocRef = doc(db, `users/${uid}`);
     await updateDoc(userDocRef, {
-      username: newUsername,
+      username: newUsername.toLowerCase(),
     });
 
     return true;
@@ -128,7 +131,7 @@ const createUserDocument = async (user: User) => {
     profileImage: user.photoURL || null,
     lastActive: Timestamp.now(),
     chats: [],
-    status: "online",
+    status: "offline",
   };
 
   try {

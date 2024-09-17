@@ -11,8 +11,6 @@ const StyledTextInput = styled(TextInput);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 const signup = () => {
-  const { setUser } = useGlobalContext();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",

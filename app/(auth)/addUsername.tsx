@@ -6,38 +6,42 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useGlobalContext } from "@/context/GlobalProvider";
 
 const AddUsernameScreen = () => {
-  const { user, setIsLogged } = useGlobalContext();
+  const { user, setisUserReady, isUserReady, isLogged } = useGlobalContext();
 
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  console.log("first");
-
   const router = useRouter();
 
   const handleAddUsername = async () => {
-    if (!username.trim()) {
-      setError("Username cannot be empty");
-      return;
-    }
-    console.log("masuk otomatis function");
+    try {
+      if (!username.trim()) {
+        setError("Username cannot be empty");
+        return;
+      }
 
-    setLoading(true);
-    const success = await updateUsername(user!.uid, username.trim());
+      setLoading(true);
+      await updateUsername(user!.uid, username.trim().toLowerCase());
 
-    if (success) {
-      setIsLogged(true);
+      setisUserReady(true);
+
       router.replace("/(main)/home");
-    } else {
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
       setError("Username already exists, please choose another one");
+      throw error;
     }
-    setLoading(false);
   };
 
   return (
     <View className="flex-1 bg-white justify-center items-center px-6">
-      <Text className="text-2xl font-bold text-gray-800 mb-4">
+      <Text
+        onPress={() => console.log(isUserReady, isLogged)}
+        className="text-2xl font-bold text-gray-800 mb-4"
+      >
         Set Your Username
       </Text>
 

@@ -16,6 +16,7 @@ export default function EditProfileScreen() {
   const [avatar, setAvatar] = useState("https://example.com/avatar.jpg");
   const [name, setName] = useState("John Doe");
   const [phone, setPhone] = useState("+123 456 7890");
+  const [username, setUsername] = useState("");
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -63,7 +64,14 @@ export default function EditProfileScreen() {
 
         {/* Form Inputs */}
         <View className="bg-white p-4">
-          <Text className="text-gray-500">Name</Text>
+          <Text className="text-gray-500">Username</Text>
+          <TextInput
+            value={username}
+            onChangeText={setUsername}
+            className="bg-gray-200 rounded-full px-4 py-2 mt-1"
+            placeholder="username"
+          />
+          <Text className="text-gray-500 mt-4">Name</Text>
           <TextInput
             value={name}
             onChangeText={setName}
