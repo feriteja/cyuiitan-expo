@@ -1,19 +1,11 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Pressable,
-  Alert,
-} from "react-native";
-import { Link, router, useNavigation } from "expo-router";
-import { styled } from "nativewind";
-import { login } from "@/lib/firebase";
 import { useGlobalContext } from "@/context/GlobalProvider";
+import { login } from "@/lib/firebase";
+import { Link, router } from "expo-router";
+import React, { useState } from "react";
+import { Alert, Pressable, Text, TextInput, View } from "react-native";
 
 const signin = () => {
-  const { setUser, setIsLogged, user } = useGlobalContext();
+  const { user, setisUserReady } = useGlobalContext();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,23 +20,14 @@ const signin = () => {
 
   const handleLogin = async () => {
     try {
-      const user = await login(formData.email, formData.password);
-      setUser(user);
-      setIsLogged(true);
+      await login(formData.email, formData.password);
+      setisUserReady(true);
       router.replace("/(main)/home");
     } catch (error) {
       Alert.alert("gagal login");
       // console.log(error);
       throw error;
     }
-  };
-
-  const handleRegister = () => {
-    // navigation.navigate();
-  };
-
-  const handleForgotPassword = () => {
-    // navigation.navigate('ForgotPassword');
   };
 
   return (

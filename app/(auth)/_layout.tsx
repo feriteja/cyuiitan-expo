@@ -5,9 +5,10 @@ import { Loader } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
 
 const AuthLayout = () => {
-  const { loading, isLogged } = useGlobalContext();
+  const { loading, isLogged, isUserReady } = useGlobalContext();
 
-  if (!loading && isLogged) return <Redirect href="/(main)/home" />;
+  if (!loading && isLogged && isUserReady)
+    return <Redirect href="/(main)/home" />;
 
   return (
     <>

@@ -11,7 +11,7 @@ const StyledTextInput = styled(TextInput);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 const signup = () => {
-  const { setUser, setIsLogged } = useGlobalContext();
+  const { setUser } = useGlobalContext();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -34,14 +34,15 @@ const signup = () => {
     }
 
     try {
-      const user = await register(
+      await register(
         formData.email,
         formData.password,
         formData.confirmPassword
       );
-      setUser(user);
-      setIsLogged(true);
-      router.replace("/(main)/home");
+
+      router.replace({
+        pathname: "/(auth)/addUsername",
+      });
     } catch (error) {
       Alert.alert("Failed to register");
       throw error;

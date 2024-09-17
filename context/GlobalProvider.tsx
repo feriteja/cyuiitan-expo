@@ -15,6 +15,8 @@ interface GlobalContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   loading: boolean;
+  isUserReady: boolean;
+  setisUserReady: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Create the context with a default value
@@ -37,6 +39,7 @@ interface GlobalProviderProps {
 const GlobalProvider = ({ children }: GlobalProviderProps) => {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isUserReady, setisUserReady] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -64,6 +67,8 @@ const GlobalProvider = ({ children }: GlobalProviderProps) => {
         user,
         setUser,
         loading,
+        setisUserReady,
+        isUserReady,
       }}
     >
       {children}

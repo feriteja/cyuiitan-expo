@@ -1,12 +1,23 @@
 // App.tsx
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"; // Optional: Firestore
+import {
+  collection,
+  doc,
+  getDocs,
+  getFirestore,
+  query,
+  setDoc,
+  Timestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore"; // Optional: Firestore
 import {
   initializeAuth,
   getReactNativePersistence,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   User,
+  onAuthStateChanged,
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import crashlytics from "@react-native-firebase/crashlytics";
@@ -59,6 +70,7 @@ const register = async (
       password
     );
     const user = userCredential.user;
+    createUserDocument(user);
     // crashlytics().log(`user ${email} created successfully`);
     return user;
   } catch (error) {
@@ -68,4 +80,73 @@ const register = async (
   }
 };
 
-export { login, register };
+const logout = async () => {
+  try {
+    await auth.signOut();
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateUsername = async (uid: string, newUsername: string) => {
+  // Reference to the users collection
+  const usersRef = collection(db, "users");
+
+  try {
+    // Check if the username already exists
+    const usernameQuery = query(usersRef, where("username", "==", newUsername));
+    const querySnapshot = await getDocs(usernameQuery);
+
+    if (!querySnapshot.empty) {
+      // If querySnapshot is not empty, username already exists
+
+      throw new Error(
+        "Username already exists, please choose a different one."
+      );
+    }
+
+    // If username doesn't exist, update the current user's document
+    const userDocRef = doc(db, `users/${uid}`);
+    await updateDoc(userDocRef, {
+      username: newUsername,
+    });
+
+    return true;
+  } catch (error) {
+    throw new Error("Error checking/updating username");
+  }
+};
+
+const createUserDocument = async (user: User) => {
+  if (!user) return;
+
+  const userRef = doc(db, "users", user.uid);
+
+  const userData = {
+    name: user.displayName || null,
+    email: user.email,
+    profileImage: user.photoURL || null,
+    lastActive: Timestamp.now(),
+    chats: [],
+    status: "online",
+  };
+
+  try {
+    await setDoc(userRef, userData, { merge: true });
+  } catch (error) {}
+};
+
+// Function to monitor auth state and trigger user document creation
+const monitorAuthState = () => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      await createUserDocument(user);
+    } else {
+      console.log("No user signed in");
+    }
+  });
+
+  return unsubscribe;
+};
+
+export { login, register, logout, monitorAuthState, updateUsername };
